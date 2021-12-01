@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Popup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400" rel="stylesheet" />
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Open Sans';
+        font-weight: 300;
+      }
+      .title {
+        color: #db5b33;
+        font-weight: 300;
+        text-align: center;
+      }
+
+      /* 팝업을 위한 CSS */
+      section {
+        height: 500px;
+        /* display: flex;
+        align-items: center;
+        justify-content: center; */
+      }
+      .popup-window {
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        max-width: 520px;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 10px;
+        background-color: white;
+        z-index: 999;
+      }
+
+      .popup-window .icon-cover {
+        text-align: right;
+        margin: 0;
+      }
+      .popup-window .bx {
+        /* position: absolute;
+        right: 0; */
+        font-size: 30px;
+
+        cursor: pointer;
+      }
+      .popup-window > .title {
+        margin: 0;
+      }
+      #disableDiv {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #eeeeee;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Popup</h1>
+
+    <!-- 팝업을 위한 HTML -->
+    <button class="popup-open-btn">toggle popup</button>
+    <span class="popup-open-btn">toggle popup</span>
+
+    <div id="disableDiv"></div>
+    <div class="popup-window">
+      <p class="icon-cover"><i class="bx bx-x"></i></p>
+      <h1 class="title">Hello!</h1>
+      <p>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rerum necessitatibus libero distinctio nostrum eos
+        voluptatem esse, quas recusandae. Neque doloribus dicta dolores voluptatum eaque commodi maxime ea quidem ipsa
+        ex?
+      </p>
+      <input type="text" />
+      <button>OK</button>
+      <button>Cancel</button>
+    </div>
+    <p class="popup-message"></p>
+  </body>
+</html>
