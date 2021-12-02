@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" />
+    <title>Carousel Slider</title>
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Open Sans';
+        font-weight: 300;
+        color: #58666e;
+        background-color: #f0f3f4;
+      }
+      .title {
+        color: #db5b33;
+        font-weight: 300;
+        text-align: center;
+      }
+      /* 캐러셀의 window 역할을 한다. */
+      .carousel {
+        position: relative;
+        margin: 0 auto;
+        overflow: hidden;
+        /* carousel 요소의 width 셋팅이 완료될 때까지 감춘다. */
+        opacity: 0;
+      }
+      .carousel-slides {
+        --currentSlide: 0;
+        --duration: 0;
+        /* 수평 정렬 */
+        display: flex;
+        transition: transform calc(var(--duration) * 1ms) ease-out;
+        transform: translate3D(calc(var(--currentSlide) * -100%), 0, 0);
+      }
+      .carousel-slides img {
+        padding: 5px;
+      }
+      /* carousel의 prev, next 버튼 */
+      .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2em;
+        color: #fff;
+        background-color: transparent;
+        border-color: transparent;
+        cursor: pointer;
+        z-index: 99;
+      }
+      .carousel-control:focus {
+        outline: none;
+      }
+      /* carousel의 prev 버튼 */
+      .carousel-control.prev {
+        left: 0;
+      }
+      /* carousel의 next 버튼 */
+      .carousel-control.next {
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Carousel Slider</h1>
+    <div class="carousel"></div>
+
+    <script>
+      // 노드 생성
+      const $carouselSlides = document.createElement('div');
+
+      const carousel = ($container, images) => {
+        const $fragment = document.createDocumentFragment();
+        const $nextBtn = document.createElement('button');
+        const $prevBtn = document.createElement('button');
+
+        $carouselSlides.classList.add('carousel-slides');
+
+        $prevBtn.classList.add('carousel-control', 'prev');
+        $nextBtn.classList.add('carousel-control', 'next');
+
+        $prevBtn.textContent = '≪';
+        $nextBtn.textContent = `≫`;
+
+        // 이미지 주소 설정
+        images.forEach(image => {
+          const newImg = document.createElement('img');
+          newImg.setAttribute('src', `${image}`);
+          $carouselSlides.appendChild(newImg);
+        });
+
+        $fragment.append($carouselSlides, $prevBtn, $nextBtn);
+        $container.appendChild($fragment);
+        $container.style.width = `${$carouselSlides.firstElementChild.naturalWidth}px`;
+
+        // 맨앞 맨뒤 이미지 노드 복사
+        const $firstCloneNode = $carouselSlides.firstElementChild;
+        const $lastCloneNode = $carouselSlides.lastElementChild;
+
+        $carouselSlides.style.setProperty('--currentSlide', '1');
+        $carouselSlides.style.setProperty('--duration', '300');
+
+        $carouselSlides.appendChild($firstCloneNode.cloneNode(true));
+        $carouselSlides.insertBefore($lastCloneNode.cloneNode(true), $firstCloneNode);
+      };
+
+      carousel(document.querySelector('.carousel'), [
+        'movies/movie-1.jpg',
+        'movies/movie-2.jpg',
+        'movies/movie-3.jpg',
+        'movies/movie-4.jpg',
+      ]);
+
+      // 과도한 클릭 이벤트 방지
+      const sliderMovement = action => {
+        setTimeout(() => {
+          $carouselSlides.style.setProperty('--duration', '0');
+          $carouselSlides.style.setProperty('--currentSlide', action ? '4' : '1');
+        }, 300);
+      };
+
+      // 자동 슬라이더
+      setInterval(() => {
+        $carouselSlides.style.setProperty('--duration', '200');
+        $carouselSlides.style.setProperty(
+          '--currentSlide',
+          +getComputedStyle($carouselSlides).getPropertyValue('--currentSlide') + 1
+        );
+        if (getComputedStyle($carouselSlides).getPropertyValue('--currentSlide') > 4) sliderMovement(false);
+      }, 5000);
+
+      // 쓰로틀 함수
+      let timerId = null;
+      const throttle = (callback, delay) => event => {
+        if (timerId) return;
+        timerId = setTimeout(
+          () => {
+            callback(event);
+            timerId = null;
+          },
+          delay,
+          event
+        );
+      };
+
+      // prev 버튼
+      document.querySelector('.prev').addEventListener(
+        'click',
+        throttle(() => {
+          $carouselSlides.style.setProperty('--duration', '200');
+          $carouselSlides.style.setProperty(
+            '--currentSlide',
+            +getComputedStyle($carouselSlides).getPropertyValue('--currentSlide') - 1
+          );
+          if (getComputedStyle($carouselSlides).getPropertyValue('--currentSlide') < 1) sliderMovement(true);
+        }, 300)
+      );
+
+      // next 버튼
+      document.querySelector('.next').addEventListener(
+        'click',
+        throttle(() => {
+          $carouselSlides.style.setProperty('--duration', '200');
+          $carouselSlides.style.setProperty(
+            '--currentSlide',
+            +getComputedStyle($carouselSlides).getPropertyValue('--currentSlide') + 1
+          );
+          if (getComputedStyle($carouselSlides).getPropertyValue('--currentSlide') > 4) sliderMovement(false);
+        }, 300)
+      );
+
+      // 이미지 크기 설정
+      window.addEventListener('load', () => {
+        const $carousel = document.querySelector('.carousel');
+        $carousel.style.width = `${$carouselSlides.firstElementChild.scrollWidth}px`;
+        $carousel.style.opacity = 1;
+      });
+    </script>
+  </body>
+</html>
