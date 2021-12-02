@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Popup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400" rel="stylesheet" />
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+    <style>
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Open Sans';
+        font-weight: 300;
+      }
+      .title {
+        color: #db5b33;
+        font-weight: 300;
+        text-align: center;
+      }
+      /* 팝업을 위한 CSS */
+      .popup-wrap {
+        display: none;
+      }
+      .popup-hidden {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0.6;
+        z-index: 997;
+      }
+      .popup-window {
+        border-radius: 10px;
+        padding: 20px;
+        position: fixed;
+        left: 50%;
+        top: 20%;
+        transform: translate(-50%, 0);
+        min-height: 200px;
+        max-width: 520px;
+        z-index: 999;
+        background-color: white;
+        box-shadow: 2px 2px 2px 2px #343434;
+      }
+      .popup-window > .title {
+        margin: 0;
+      }
+      .icon-contain {
+        text-align: right;
+        margin: 0;
+        cursor: pointer;
+      }
+      .bx {
+        font-size: 30px;
+      }
+    </style>
+  </head>
+  <!--  -->
+  <body>
+    <h1 class="title">Popup</h1>
+
+    <!-- 팝업을 위한 HTML -->
+    <button class="toggle-btn">toggle popup</button>
+    <section class="popup-wrap">
+      <div class="popup-hidden"></div>
+      <div class="popup-window">
+        <p class="icon-contain">
+          <i class="bx bx-x"></i>
+        </p>
+        <h1 class="title">Hello!</h1>
+        <p>
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequuntur aliquid quas recusandae pariatur? Quo
+          dignissimos corrupti tenetur molestias itaque illum? Cum porro maiores accusantium ducimus eos sint quo
+          facilis perferendis?
+        </p>
+        <form class="check-form">
+          <input class="text-input" type="text" />
+          <input type="submit" value="OK" />
+          <button type="button" class="cancel-btn">Cancel</button>
+        </form>
+      </div>
+    </section>
+
+    <p class="popup-message"></p>
+  </body>
+
+  <script>
+    const $popupWrap = document.querySelector('.popup-wrap');
+    const $textInput = document.querySelector('.text-input');
+
+    // 팝업 띄우기
+    document.querySelector('.toggle-btn').addEventListener('click', () => {
+      $popupWrap.style.display = 'block';
+    });
+
+    // 팝업 감추기
+    const popupHidden = () => {
+      $popupWrap.style.display = 'none';
+      $textInput.value = '';
+    };
+
+    $popupWrap.addEventListener('click', e => {
+      if (e.target.matches('.bx') || e.target.matches('.cancel-btn') || e.target.matches('.popup-hidden')) {
+        popupHidden();
+      }
+    });
+
+    // input 글자 받아오기
+    document.querySelector('.check-form').addEventListener('submit', e => {
+      e.preventDefault();
+      document.querySelector('.popup-message').textContent = `from popup : ${$textInput.value}`;
+      popupHidden();
+    });
+  </script>
+</html>
